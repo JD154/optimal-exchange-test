@@ -1,69 +1,99 @@
-# React + TypeScript + Vite
+# 🪙 Optimal Exchange Test
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A React-based web application for testing and visualizing optimal coin exchange coding challenge
 
-Currently, two official plugins are available:
+## 🌐 Live Demo
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+**Try it online:** [https://optimal-exchange-test.netlify.app/](https://optimal-exchange-test.netlify.app/)
 
-## Expanding the ESLint configuration
+## 📋 Problem Description
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+### The Optimal Exchange Problem
 
-```js
-export default tseslint.config([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+The Exchange of currency of a random country has 'k' number of denominations. For each denomination, there is a coin.
 
-      // Remove tseslint.configs.recommended and replace with this
-      ...tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      ...tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      ...tseslint.configs.stylisticTypeChecked,
+When a transaction happens with a cashier to pay an amount 'X', you give exactly or some amount greater than 'X' (let's say 'Y') to the cashier. The cashier then pays back the extra amount (Y-X) back to you. Both parties try to minimize the number of coins exchanged in the process.
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+## 🏗️ Project Structure
+
+```
+src/
+├── components/           # React components
+│   ├── forms/           # Form-related components
+│   │   ├── BatchInputForm.tsx      # Main input form
+│   │   └── ValidationMessage.tsx   # Validation feedback
+│   └── sections/        # Page sections
+│       └── ResultsSection.tsx      # Results display & stats
+├── hooks/               # Custom React hooks
+│   ├── useTestProcessor.ts         # Test case processing logic
+│   └── useValidation.ts           # Input validation logic
+├── types/               # TypeScript type definitions
+│   └── optimalExchange.ts         # Core type definitions
+├── utils/               # Utility functions & algorithms
+│   ├── coinExchange.ts            # Core algorithm implementation
+│   ├── testProcessing.ts          # Test case parsing & formatting
+│   └── index.ts                   # Utility exports
+├── App.tsx              # Main application component
+├── main.tsx            # Application entry point
+└── index.css           # Global styles (Tailwind + DaisyUI)
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+## 📊 Input Format
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default tseslint.config([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
 ```
+3                          # Number of test cases
+100 6 1 2 5 10 20 50      # N=100, K=6, denominations=[1,2,5,10,20,50]
+100 6 1 3 10 15 51 84     # N=100, K=6, denominations=[1,3,10,15,51,84]
+100 6 1 4 9 16 25 36      # N=100, K=6, denominations=[1,4,9,16,25,36]
+```
+
+**Format Rules:**
+
+- First line: Number of test cases
+- Each case: `N K [K denominations]`
+- N: Range [1, N] to test (max 100)
+- K: Number of denominations (max 10)
+- Denominations: Positive unique integers
+
+## 📈 Expected Output
+
+```
+2.96 5    # Average: 2.96 coins, Maximum: 5 coins
+2.56 3    # Average: 2.56 coins, Maximum: 3 coins
+2.85 5    # Average: 2.85 coins, Maximum: 5 coins
+```
+
+## 🛠️ Technology Stack
+
+- **Frontend Framework**: React 19.1.1 with TypeScript
+- **Build Tool**: Vite 7.1.2
+- **Styling**: Tailwind CSS 4.1.13 + DaisyUI 5.1.7
+- **Development**: ESLint with TypeScript support
+- **Deployment**: Netlify
+
+## 🚀 Getting Started
+
+### Prerequisites
+
+- Node.js (v18 or higher)
+- npm or yarn
+
+### Installation
+
+```bash
+# Clone the repository
+git clone https://github.com/JD154/optimal-exchange-test.git
+
+# Navigate to project directory
+cd optimal-exchange-test
+
+# Install dependencies
+npm install
+
+# Start development server
+npm run dev
+```
+
+## 📄 License
+
+This project is open source and available under the [MIT License](LICENSE).
