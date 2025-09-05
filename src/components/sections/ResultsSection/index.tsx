@@ -7,7 +7,7 @@ import {
   TrendingUp,
   ArrowUp,
 } from 'lucide-react'
-import type { TestCaseResult } from '../../types/optimalExchange'
+import type { TestCaseResult } from '../../../types/optimalExchange'
 import { StatCard, ResultsTable } from './components'
 
 interface ResultsSectionProps {
