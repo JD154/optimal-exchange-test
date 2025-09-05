@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react'
+import React from 'react'
 import {
   XCircle,
   BarChart3,
@@ -7,8 +7,8 @@ import {
   TrendingUp,
   ArrowUp,
 } from 'lucide-react'
-import type { TestCaseResult } from '../../types/optimalExchange'
-import { ResultsTable, StatCard } from './ResultsSection/components'
+import type { TestCaseResult } from '../../../types/optimalExchange'
+import { StatCard, ResultsTable } from './components'
 
 interface ResultsSectionProps {
   results: TestCaseResult[]
@@ -52,33 +52,6 @@ export const ResultsSection: React.FC<ResultsSectionProps> = ({
       ? Math.max(...validResults.map(r => r.result!.maximum))
       : 0
 
-  const statsData = useMemo(
-    () => [
-      {
-        title: 'Total Cases',
-        value: totalCases,
-        subtitle: 'processed',
-        icon: <FileText className="w-6 h-6" />,
-        variant: 'primary' as const,
-      },
-      {
-        title: 'Overall Average',
-        value: overallAverage.toFixed(2),
-        subtitle: 'coins needed',
-        icon: <TrendingUp className="w-6 h-6" />,
-        variant: 'secondary' as const,
-      },
-      {
-        title: 'Global Maximum',
-        value: globalMaximum,
-        subtitle: 'worst case',
-        icon: <ArrowUp className="w-6 h-6" />,
-        variant: 'accent' as const,
-      },
-    ],
-    [totalCases, overallAverage, globalMaximum]
-  )
-
   return (
     <div className="card bg-base-100 shadow-xl">
       <div className="card-body">
@@ -100,16 +73,29 @@ export const ResultsSection: React.FC<ResultsSectionProps> = ({
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 mb-6">
-          {statsData.map(stat => (
-            <StatCard
-              key={stat.title}
-              title={stat.title}
-              value={stat.value}
-              subtitle={stat.subtitle}
-              icon={stat.icon}
-              variant={stat.variant}
-            />
-          ))}
+          <StatCard
+            title="Total Cases"
+            value={totalCases}
+            subtitle="processed"
+            icon={<FileText className="w-6 h-6" />}
+            variant="primary"
+          />
+
+          <StatCard
+            title="Overall Average"
+            value={overallAverage.toFixed(2)}
+            subtitle="coins needed"
+            icon={<TrendingUp className="w-6 h-6" />}
+            variant="secondary"
+          />
+
+          <StatCard
+            title="Global Maximum"
+            value={globalMaximum}
+            subtitle="worst case"
+            icon={<ArrowUp className="w-6 h-6" />}
+            variant="accent"
+          />
         </div>
 
         <ResultsTable results={results} />

@@ -1,4 +1,5 @@
 import React from 'react'
+import { CheckCircle, Trash2 } from 'lucide-react'
 import { ValidationMessage } from './ValidationMessage'
 
 interface ValidationResult {
@@ -44,11 +45,11 @@ Each case: N K [K denominations]
 - Denominations: positive unique numbers`
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-4">
-      <div className="form-control">
-        <label className="label">
-          <span className="label-text text-lg font-medium">Test Cases</span>
-          <span className="label-text-alt">
+    <form onSubmit={handleSubmit} className="space-y-4 w-full">
+      <div className="form-control w-full">
+        <div className="flex justify-between items-center mb-2 w-full">
+          <span className="text-lg font-medium">Test Cases</span>
+          <span className="text-sm text-gray-500">
             {
               value
                 .trim()
@@ -57,9 +58,9 @@ Each case: N K [K denominations]
             }{' '}
             lines
           </span>
-        </label>
+        </div>
         <textarea
-          className={`textarea textarea-bordered h-64 font-mono text-sm leading-relaxed ${
+          className={`textarea textarea-bordered h-64 font-mono text-sm leading-relaxed w-full ${
             validation.errors.length > 0 ? 'textarea-error' : ''
           }`}
           placeholder={placeholder}
@@ -67,6 +68,15 @@ Each case: N K [K denominations]
           onChange={e => onChange(e.target.value)}
           disabled={isProcessing}
         />
+
+        <div className="mt-2">
+          {validation.isValid && value.trim() && (
+            <div className="badge badge-success gap-2 px-4 py-3">
+              <CheckCircle className="h-4 w-4" />
+              Valid Format
+            </div>
+          )}
+        </div>
       </div>
 
       <ValidationMessage
@@ -74,8 +84,18 @@ Each case: N K [K denominations]
         warnings={validation.warnings}
       />
 
-      <div className="flex flex-col sm:flex-row gap-4 justify-between items-start sm:items-center">
+      <div className="flex justify-center sm:justify-end">
         <div className="flex flex-wrap gap-3">
+          <button
+            type="button"
+            className="btn btn-outline min-w-[100px]"
+            onClick={onClear}
+            disabled={isProcessing}
+          >
+            <Trash2 className="h-5 w-5" />
+            Clear
+          </button>
+
           <button
             type="submit"
             className={`btn btn-primary min-w-[140px] ${
@@ -90,69 +110,11 @@ Each case: N K [K denominations]
               </>
             ) : (
               <>
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="h-5 w-5"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
-                  />
-                </svg>
+                <CheckCircle className="h-5 w-5" />
                 Process Cases
               </>
             )}
           </button>
-
-          <button
-            type="button"
-            className="btn btn-outline min-w-[100px]"
-            onClick={onClear}
-            disabled={isProcessing}
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className="h-5 w-5"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
-              />
-            </svg>
-            Clear
-          </button>
-        </div>
-
-        <div className="flex items-center">
-          {validation.isValid && value.trim() && (
-            <div className="badge badge-success gap-2 px-4 py-3">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="h-4 w-4"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
-                />
-              </svg>
-              Valid Format
-            </div>
-          )}
         </div>
       </div>
     </form>
