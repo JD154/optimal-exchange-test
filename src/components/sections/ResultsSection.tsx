@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import {
   Eye,
   XCircle,
@@ -7,6 +7,7 @@ import {
   FileText,
   TrendingUp,
   ArrowUp,
+  X,
 } from 'lucide-react'
 import type { TestCaseResult } from '../../types/optimalExchange'
 
@@ -46,114 +47,162 @@ const StatCard: React.FC<StatCardProps> = ({
   )
 }
 
+interface DetailModalProps {
+  result: TestCaseResult
+  caseIndex: number
+  isOpen: boolean
+  onClose: () => void
+}
+
+const DetailModal: React.FC<DetailModalProps> = ({
+  result,
+  caseIndex,
+  isOpen,
+  onClose,
+}) => {
+  if (!isOpen) return null
+
+  return (
+    <div className="modal modal-open">
+      <div className="modal-box relative max-w-md">
+        <button
+          className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2"
+          onClick={onClose}
+        >
+          <X className="w-4 h-4" />
+        </button>
+
+        <h3 className="font-bold text-lg mb-4">Case {caseIndex + 1} Details</h3>
+
+        <div className="space-y-3">
+          <div className="flex justify-between items-center py-2 border-b border-base-300">
+            <span className="font-medium">N:</span>
+            <span className="font-mono font-bold">{result.testCase.N}</span>
+          </div>
+
+          <div className="flex justify-between items-center py-2 border-b border-base-300">
+            <span className="font-medium">K:</span>
+            <span className="font-mono font-bold">{result.testCase.K}</span>
+          </div>
+
+          <div className="py-2 border-b border-base-300">
+            <span className="font-medium block mb-2">Denominations:</span>
+            <div className="text-sm font-mono bg-base-200 p-3 rounded-lg break-all">
+              [{result.testCase.denominations.join(', ')}]
+            </div>
+          </div>
+
+          <div className="flex justify-between items-center py-2 border-b border-base-300">
+            <span className="font-medium text-primary">Average:</span>
+            <span className="font-mono font-bold text-primary">
+              {result.result?.average.toFixed(4) ?? 'N/A'}
+            </span>
+          </div>
+
+          <div className="flex justify-between items-center py-2">
+            <span className="font-medium text-secondary">Maximum:</span>
+            <span className="font-mono font-bold text-secondary">
+              {result.result?.maximum ?? 'N/A'}
+            </span>
+          </div>
+        </div>
+      </div>
+      <div className="modal-backdrop" onClick={onClose}></div>
+    </div>
+  )
+}
+
 interface ResultsTableProps {
   results: TestCaseResult[]
 }
 
 const ResultsTable: React.FC<ResultsTableProps> = ({ results }) => {
+  const [selectedCase, setSelectedCase] = useState<number | null>(null)
+
+  const handleViewDetails = (index: number) => {
+    setSelectedCase(index)
+  }
+
+  const handleCloseModal = () => {
+    setSelectedCase(null)
+  }
   return (
-    <div className="overflow-x-auto bg-base-100 rounded-xl shadow-lg">
-      <table className="table table-zebra w-full">
-        <thead>
-          <tr className="bg-base-200">
-            <th className="font-bold">Case</th>
-            <th className="font-bold">N</th>
-            <th className="font-bold">Denominations</th>
-            <th className="font-bold text-center">Average</th>
-            <th className="font-bold text-center">Maximum</th>
-            <th className="font-bold text-center">Details</th>
-          </tr>
-        </thead>
-        <tbody>
-          {results.map((result, index) => (
-            <tr key={index} className="hover:bg-base-50">
-              <td className="font-medium">
-                <div className="badge badge-outline badge-lg">{index + 1}</div>
-              </td>
-              <td>
-                <span className="font-mono font-bold text-lg">
-                  {result.testCase.N}
-                </span>
-              </td>
-              <td>
-                <div className="flex flex-wrap gap-1 max-w-xs">
-                  {result.testCase.denominations.slice(0, 5).map((denom, i) => (
-                    <span key={i} className="badge badge-sm badge-ghost">
-                      {denom}
-                    </span>
-                  ))}
-                  {result.testCase.denominations.length > 5 && (
-                    <span className="badge badge-sm badge-outline">
-                      +{result.testCase.denominations.length - 5}
-                    </span>
-                  )}
-                </div>
-              </td>
-              <td className="text-center">
-                <span className="font-mono text-primary font-bold text-lg">
-                  {result.result?.average.toFixed(2) ?? 'N/A'}
-                </span>
-              </td>
-              <td className="text-center">
-                <span className="font-mono text-secondary font-bold text-lg">
-                  {result.result?.maximum ?? 'N/A'}
-                </span>
-              </td>
-              <td className="text-center">
-                <div className="dropdown dropdown-end">
-                  <label tabIndex={0} className="btn btn-ghost btn-sm">
+    <>
+      <div className="overflow-x-auto bg-base-100 rounded-xl shadow-lg">
+        <table className="table table-zebra w-full">
+          <thead>
+            <tr className="bg-base-200">
+              <th className="font-bold">Case</th>
+              <th className="font-bold">N</th>
+              <th className="font-bold">Denominations</th>
+              <th className="font-bold text-center">Average</th>
+              <th className="font-bold text-center">Maximum</th>
+              <th className="font-bold text-center">Details</th>
+            </tr>
+          </thead>
+          <tbody>
+            {results.map((result, index) => (
+              <tr key={index} className="hover:bg-base-50">
+                <td className="font-medium">
+                  <div className="badge badge-outline badge-lg">
+                    {index + 1}
+                  </div>
+                </td>
+                <td>
+                  <span className="font-mono font-bold text-lg">
+                    {result.testCase.N}
+                  </span>
+                </td>
+                <td>
+                  <div className="flex flex-wrap gap-1 max-w-xs">
+                    {result.testCase.denominations
+                      .slice(0, 5)
+                      .map((denom, i) => (
+                        <span key={i} className="badge badge-sm badge-ghost">
+                          {denom}
+                        </span>
+                      ))}
+                    {result.testCase.denominations.length > 5 && (
+                      <span className="badge badge-sm badge-outline">
+                        +{result.testCase.denominations.length - 5}
+                      </span>
+                    )}
+                  </div>
+                </td>
+                <td className="text-center">
+                  <span className="font-mono text-primary font-bold text-lg">
+                    {result.result?.average.toFixed(2) ?? 'N/A'}
+                  </span>
+                </td>
+                <td className="text-center">
+                  <span className="font-mono text-secondary font-bold text-lg">
+                    {result.result?.maximum ?? 'N/A'}
+                  </span>
+                </td>
+                <td className="text-center">
+                  <button
+                    className="btn btn-ghost btn-sm gap-2"
+                    onClick={() => handleViewDetails(index)}
+                  >
                     <Eye className="w-4 h-4" />
                     View
-                  </label>
-                  <div
-                    tabIndex={0}
-                    className="dropdown-content z-[1] card card-compact w-72 p-2 shadow-xl bg-base-100 border border-base-300"
-                  >
-                    <div className="card-body">
-                      <h3 className="font-bold text-base mb-3">
-                        Case {index + 1} Details
-                      </h3>
-                      <div className="text-sm space-y-2">
-                        <div className="flex justify-between">
-                          <span className="font-medium">N:</span>
-                          <span className="font-mono">{result.testCase.N}</span>
-                        </div>
-                        <div className="flex justify-between">
-                          <span className="font-medium">K:</span>
-                          <span className="font-mono">{result.testCase.K}</span>
-                        </div>
-                        <div>
-                          <span className="font-medium">Denominations:</span>
-                          <div className="mt-1 text-xs font-mono bg-base-200 p-2 rounded">
-                            [{result.testCase.denominations.join(', ')}]
-                          </div>
-                        </div>
-                        <div className="flex justify-between pt-2 border-t">
-                          <span className="font-medium text-primary">
-                            Average:
-                          </span>
-                          <span className="font-mono font-bold">
-                            {result.result?.average.toFixed(4) ?? 'N/A'}
-                          </span>
-                        </div>
-                        <div className="flex justify-between">
-                          <span className="font-medium text-secondary">
-                            Maximum:
-                          </span>
-                          <span className="font-mono font-bold">
-                            {result.result?.maximum ?? 'N/A'}
-                          </span>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-    </div>
+                  </button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+
+      {selectedCase !== null && (
+        <DetailModal
+          result={results[selectedCase]}
+          caseIndex={selectedCase}
+          isOpen={selectedCase !== null}
+          onClose={handleCloseModal}
+        />
+      )}
+    </>
   )
 }
 
